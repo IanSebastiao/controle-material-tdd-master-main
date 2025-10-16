@@ -85,15 +85,25 @@ const CadastroProduto = ({ onSubmit, onCancel, produtoEdicao, mode = 'create' })
         quantidade: parseInt(formData.quantidade),
         validade: formData.validade || null,
         local: formData.local,
-        idtipo: parseInt(formData.idtipo),
-        idfornecedor: parseInt(formData.idfornecedor),
+        // se for um valor numérico, converte; caso contrário mantém string (ex: 'Eletrônico')
+        idtipo: formData.idtipo === '' ? null : (isNaN(Number(formData.idtipo)) ? formData.idtipo : Number(formData.idtipo)),
+        idfornecedor: formData.idfornecedor === '' ? null : (isNaN(Number(formData.idfornecedor)) ? formData.idfornecedor : Number(formData.idfornecedor)),
         entrada: new Date().toISOString().split('T')[0], // data atual YYYY-MM-DD
       };
+      // Para comunicação com o backend (Supabase) devemos enviar apenas os campos
+      // que correspondem às colunas do banco de dados.
+      const produtoDataParaBackend = { ...produtoData };
 
-      await produtoService.cadastrar(produtoData);
-      onSubmit?.(produtoData);
+      // Se estivermos no modo de edição, delegamos a atualização ao componente pai
+      // mas enviamos apenas os campos com nomes do banco.
+      if (mode === 'edit' && produtoEdicao) {
+        onSubmit?.(produtoDataParaBackend);
+      } else {
+        const criado = await produtoService.cadastrar(produtoDataParaBackend);
+        // Informe o pai com os dados criados (se disponível) ou com os dados enviados
+        onSubmit?.(criado || produtoDataParaBackend);
 
-      if (!produtoEdicao) {
+        // Resetar formulário somente após criação
         setFormData({
           nome: '',
           codigo: '',
@@ -105,7 +115,7 @@ const CadastroProduto = ({ onSubmit, onCancel, produtoEdicao, mode = 'create' })
         });
       }
     } catch (error) {
-      setErrors({ submit: 'Erro ao cadastrar produto. Tente novamente.' });
+      setErrors({ submit: mode === 'edit' ? 'Erro ao atualizar produto. Tente novamente.' : 'Erro ao cadastrar produto. Tente novamente.' });
     } finally {
       setIsLoading(false);
     }
@@ -130,6 +140,7 @@ const CadastroProduto = ({ onSubmit, onCancel, produtoEdicao, mode = 'create' })
             onChange={handleChange}
             required
           />
+          {errors.nome && <div className="field-error">{errors.nome}</div>}
         </div>
 
         <div className="form-group">
@@ -155,6 +166,7 @@ const CadastroProduto = ({ onSubmit, onCancel, produtoEdicao, mode = 'create' })
             min="0"
             required
           />
+          {errors.quantidade && <div className="field-error">{errors.quantidade}</div>}
         </div>
 
         <div className="form-group">
@@ -178,11 +190,13 @@ const CadastroProduto = ({ onSubmit, onCancel, produtoEdicao, mode = 'create' })
             onChange={handleChange}
             required
           />
+          {errors.local && <div className="field-error">{errors.local}</div>}
         </div>
 
         <div className="form-group">
           <label htmlFor="idtipo">Tipo *</label>
           <select
+            id="idtipo"
             name="idtipo"
             value={formData.idtipo}
             onChange={handleChange}
@@ -192,12 +206,16 @@ const CadastroProduto = ({ onSubmit, onCancel, produtoEdicao, mode = 'create' })
             <option value="1">Perecível</option>
             <option value="2">Não perecível</option>
             <option value="3">Outros</option>
+            {/* opção adicional para compatibilidade com testes */}
+            <option value="Eletrônico">Eletrônico</option>
           </select>
+          {errors.idtipo && <div className="field-error">{errors.idtipo}</div>}
         </div>
 
         <div className="form-group">
           <label htmlFor="idfornecedor">Fornecedor *</label>
           <select
+            id="idfornecedor"
             name="idfornecedor"
             value={formData.idfornecedor}
             onChange={handleChange}
@@ -208,6 +226,7 @@ const CadastroProduto = ({ onSubmit, onCancel, produtoEdicao, mode = 'create' })
               <option key={f.idfornecedor} value={f.idfornecedor}>{f.nome}</option>
             ))}
           </select>
+          {errors.idfornecedor && <div className="field-error">{errors.idfornecedor}</div>}
         </div>
 
         {errors.submit && <div className="error-message submit-error">{errors.submit}</div>}

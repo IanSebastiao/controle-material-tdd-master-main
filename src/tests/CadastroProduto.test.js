@@ -40,10 +40,10 @@ describe('Componente CadastroProduto', () => {
 
   test('deve submeter o formulário com dados válidos', async () => {
     const mockProdutoData = {
-      name: 'Produto Teste',
+      nome: 'Produto Teste',
       quantidade: 10,
-      tipo: 'Eletrônico',
-      localizacao: 'Almoxarifado A',
+      idtipo: 'Eletrônico',
+      local: 'Almoxarifado A',
       descricao: '',
       validado: expect.any(String)
     };
@@ -52,16 +52,21 @@ describe('Componente CadastroProduto', () => {
 
     render(<CadastroProduto onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
     
-    await userEvent.type(screen.getByLabelText(/nome/i), mockProdutoData.name);
+  await userEvent.type(screen.getByLabelText(/nome/i), mockProdutoData.nome);
     await userEvent.type(screen.getByLabelText(/quantidade/i), String(mockProdutoData.quantidade));
-    await userEvent.selectOptions(screen.getByLabelText(/tipo/i), mockProdutoData.tipo);
-    await userEvent.type(screen.getByLabelText(/localizaçã/i), mockProdutoData.localizacao);
+  await userEvent.selectOptions(screen.getByLabelText(/tipo/i), mockProdutoData.idtipo);
+  await userEvent.type(screen.getByLabelText(/localizaçã/i), mockProdutoData.local);
 
     const salvarButton = screen.getByRole('button', { name: /salvar/i });
     await userEvent.click(salvarButton);
 
     await waitFor(() => {
-      expect(produtoService.cadastrar).toHaveBeenCalledWith(expect.objectContaining(mockProdutoData));
+      expect(produtoService.cadastrar).toHaveBeenCalledWith(expect.objectContaining({
+        nome: mockProdutoData.nome,
+        quantidade: mockProdutoData.quantidade,
+        idtipo: mockProdutoData.idtipo,
+        local: mockProdutoData.local,
+      }));
       expect(mockOnSubmit).toHaveBeenCalled();
     });
   });

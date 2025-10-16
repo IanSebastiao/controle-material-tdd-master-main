@@ -63,6 +63,3 @@ const EditarProdutoPage = () => {
 };
 
 export default EditarProdutoPage;
-import EditarProdutoPage from './pages/EditarProdutoPage';
-
-<Route path="/editar-produto/:id" element={<EditarProdutoPage />} />

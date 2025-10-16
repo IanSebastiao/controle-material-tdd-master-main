@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import Layout from '../components/common/Layout';
 import HomePage from '../pages/HomePage';
 import CadastroProdutoPage from '../pages/CadastroProdutoPage';
+import EditarProdutoPage from '../pages/EditarProdutoPage';
 import ConsultaEstoquePage from '../pages/ConsultaEstoquePage';
 import MovimentacoesPage from '../pages/MovimentacoesPage';
 import FornecedoresPage from '../pages/FornecedoresPage';
@@ -49,6 +50,7 @@ const AppRoutes = () => {
 
   const handleEditMovimentacao = async (id, movimentacaoData) => {
     try {
+    
       await movimentacaoService.atualizar(id, movimentacaoData);
       alert('Movimentação atualizada com sucesso!');
       navigate('/movimentacoes');
@@ -87,10 +89,7 @@ const AppRoutes = () => {
         <Route 
           path="/editar-produto/:id" 
           element={
-            <CadastroProdutoPage 
-              onSubmit={handleEditProduto}
-              mode="edit"
-            />
+            <EditarProdutoPage />
           } 
         />
         
