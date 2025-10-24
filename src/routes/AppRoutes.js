@@ -7,8 +7,11 @@ import EditarProdutoPage from '../pages/EditarProdutoPage';
 import ConsultaEstoquePage from '../pages/ConsultaEstoquePage';
 import MovimentacoesPage from '../pages/MovimentacoesPage';
 import FornecedoresPage from '../pages/FornecedoresPage';
+import EditarUsuarioPage from '../pages/EditarUsuarioPage';
+import ConsultaUsuariosPage from '../pages/ConsultaUsuariosPage';
 import { produtoService } from '../services/produtoService';
 import { movimentacaoService } from '../services/movimentacaoService';
+import { usuarioService } from '../services/usuarioService';
 
 const AppRoutes = () => {
   const navigate = useNavigate();
@@ -57,6 +60,18 @@ const AppRoutes = () => {
     } catch (error) {
       console.error('Erro ao atualizar movimentação:', error);
       alert('Erro ao atualizar movimentação. Tente novamente.');
+    }
+  };
+
+  // Handlers para Usuários
+  const handleEditUsuario = async (id, usuarioData) => {
+    try {
+      await usuarioService.atualizar(id, usuarioData);
+      alert('Usuário atualizado com sucesso!');
+      navigate('/usuarios'); // Assumindo que há uma rota /usuarios
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+      alert('Erro ao atualizar usuário. Tente novamente.');
     }
   };
 
@@ -118,9 +133,19 @@ const AppRoutes = () => {
         
         <Route path="/movimentacoes" element={<MovimentacoesPage />} />
         
+        {/* Rotas de Usuários */}
+        <Route path="/usuarios" element={<ConsultaUsuariosPage />} />
+
+        <Route
+          path="/editar-usuario/:id"
+          element={
+            <EditarUsuarioPage />
+          }
+        />
+
         {/* Outras Rotas */}
         <Route path="/fornecedores" element={<FornecedoresPage />} />
-        
+
         {/* Rota 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
