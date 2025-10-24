@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/controle-material-tdd-master-main/static/css/main.bc8bdb3a.css",
+    "main.js": "/controle-material-tdd-master-main/static/js/main.51e2910f.js",
+    "static/js/453.9b4ef3f5.chunk.js": "/controle-material-tdd-master-main/static/js/453.9b4ef3f5.chunk.js",
+    "index.html": "/controle-material-tdd-master-main/index.html",
+    "main.bc8bdb3a.css.map": "/controle-material-tdd-master-main/static/css/main.bc8bdb3a.css.map",
+    "main.51e2910f.js.map": "/controle-material-tdd-master-main/static/js/main.51e2910f.js.map",
+    "453.9b4ef3f5.chunk.js.map": "/controle-material-tdd-master-main/static/js/453.9b4ef3f5.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bc8bdb3a.css",
+    "static/js/main.51e2910f.js"
+  ]
+}
